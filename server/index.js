@@ -1,7 +1,9 @@
 const { ApolloServer, gql } = require('apollo-server');
+const { v4: uuidv4, } = require('uuid');
 
 const typeDefs = gql`
   type Bookmark {
+    id: ID!
     title: String
     url: String
   }
@@ -17,19 +19,23 @@ const typeDefs = gql`
 
   type Mutation {
     addBookmark(bookmark: BookmarkInput): Bookmark 
+    deleteBookmark(id: ID!): ID 
   }
 `
   
-const bookmarks = [
+var bookmarks = [
   {
+    id: '1',
     title: 'Random Image',
     url: 'https://picsum.photos/200/300'
   },
   {
+    id: '2',
     title: 'Random Article',
     url: 'https://www.random.org/',
   },
   {
+    id: '3',
     title: 'Random Image 2',
     url: 'https://picsum.photos/200/300'
   }
@@ -43,9 +49,19 @@ const resolvers = {
   }
   ,
   Mutation: {
-    addBookmark: (root, args) => {
-      bookmarks.push(args.bookmark);
-      return args.bookmark;
+    addBookmark: (root, { bookmark }) => {
+      bookmarks.push(
+        {
+          id: uuidv4(),
+          ...bookmark
+        }
+      );
+      return bookmark;
+    },
+    deleteBookmark: (root, { id } ) => {
+      console.log('id: ', id);
+      bookmarks = bookmarks.filter(bookmark => bookmark.id !== id);
+      return id
     }
   } 
 };

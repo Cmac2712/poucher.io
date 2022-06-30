@@ -1,14 +1,24 @@
-import { useQuery, gql } from "@apollo/client";
+import { useState } from "react";
+import { useQuery, useMutation, gql } from "@apollo/client";
 
-const BOOKMARKS = gql`
+const GET_BOOKMARKS = gql`
   query GetBookmarks {
     bookmarks {
+      id
       title
       url
     }
   }
 `
+
+const DELETE_BOOKMARK_MUTATION = gql`
+  mutation DELETE_BOOKMARK($id: ID!) {
+    deleteBookmark(id: $id)
+  }
+`
+
 export interface Bookmark {
+    id: string
     title: string
     url: string
 }
@@ -16,7 +26,7 @@ export interface Bookmark {
 export const Bookmarks = () => {
     const { loading, error, data } = useQuery<{
         bookmarks: Bookmark[]
-    }>(BOOKMARKS)
+    }>(GET_BOOKMARKS)
 
     if (loading) return <p>Loading...</p>;
 
@@ -25,10 +35,43 @@ export const Bookmarks = () => {
     return (
         <ul>
             {data?.bookmarks?.map(bookmark => (
-                <li key={bookmark.url}>{bookmark.title} - {bookmark.url}</li>
+                <li key={bookmark.id}>
+                  {bookmark.title} - {bookmark.url}
+                  <DeleteBookmark
+                    id={bookmark.id}
+                  />
+                </li>
             ))}
         </ul>
     );
 }
 
-export { BOOKMARKS }
+const DeleteBookmark = (
+    { id }: { id: string }
+) => {
+
+  const [deleteBookmark, { loading, error, data }] = useMutation(DELETE_BOOKMARK_MUTATION, {
+        refetchQueries: () => [
+            { query: GET_BOOKMARKS },
+            'bookmarks'
+        ]
+    })
+
+    const [deleted, setDeleted] = useState<String[]>([])
+
+  return (
+    <button 
+      onClick={async (e) => {
+        e.preventDefault()
+        setDeleted([...deleted, id])
+        deleteBookmark({ variables: { 
+          id 
+        } })
+      }}
+    >
+      delete
+    </button>
+  )
+}
+
+export { GET_BOOKMARKS }

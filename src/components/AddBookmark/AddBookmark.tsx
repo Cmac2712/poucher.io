@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, gql } from "@apollo/client";
 
-import { Bookmark, BOOKMARKS } from '../Bookmarks';
+import { Bookmark, GET_BOOKMARKS } from '../Bookmarks';
 
 const ADD_BOOKMARK_MUTATION = gql`
 	mutation ADD_BOOKMARK($bookmark: BookmarkInput) {
@@ -12,17 +12,23 @@ const ADD_BOOKMARK_MUTATION = gql`
 	}
 `;
 
+interface BookmarkInput {
+    title: string
+    url: string 
+}
+
 export const AddBookmark = () => {
 
-    const [formData, setFormData] = useState<Bookmark>({
+    const [formData, setFormData] = useState<BookmarkInput>({
         title: "",
         url: ""
     })
 
     const [addBookmark, { data, loading, error }] = useMutation<Bookmark>(ADD_BOOKMARK_MUTATION, {
         refetchQueries: [
-            { query: BOOKMARKS },
-            'GetBookmarks'
+            {
+                query: GET_BOOKMARKS
+            }
         ]
     });
 
@@ -30,7 +36,11 @@ export const AddBookmark = () => {
         <form
             onSubmit={async (e) => {
                 e.preventDefault()
-                addBookmark({ variables: { bookmark: formData } })
+                addBookmark({
+                    variables: {
+                        bookmark: formData
+                    }
+                })
                 setFormData({ title: "", url: "" })
             }}
         >
