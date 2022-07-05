@@ -24,9 +24,8 @@ function App() {
     <div>
       <h1 className={`text-2xl text-center font-bold text-zinc-700`}>Hello, my name is Craig and this is my app</h1>  
 
-      <p>{data.hello}</p>
-      {/* <Bookmarks />
-      <AddBookmark /> */}
+      <Bookmarks />
+      <AddBookmark />
     </div>
   )
 }
