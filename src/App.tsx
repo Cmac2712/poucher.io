@@ -19,10 +19,12 @@ function App() {
 
   if (error) return <p>error</p>
 
+
   return (
     <div>
       <h1 className={`text-2xl text-center font-bold text-zinc-700`}>Hello, my name is Craig and this is my app</h1>  
-      { data }
+
+      <p>{data.hello}</p>
       {/* <Bookmarks />
       <AddBookmark /> */}
     </div>

@@ -7,7 +7,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "start": "vite",
-    "build:lambda": "netlify-lambda build src/lambda",
+    "build:lambda": "netlify-lambda build src/lambda --config ./webpack.config.js",
     "start:lambda": "netlify-lambda serve src/lambda --config ./webpack.config.js"
   },
   "dependencies": {
