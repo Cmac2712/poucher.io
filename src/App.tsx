@@ -5,20 +5,7 @@ import { AddBookmark } from './components/AddBookmark'
 
 import { gql, useQuery } from '@apollo/client'
 
-const HELLO_WORLD = gql`
-  query HelloWorld {
-    hello
-  }
-`
-
 function App() {
-
-  const { loading, error, data } = useQuery(HELLO_WORLD)
-
-  if (loading) return <p>Loading...</p>
-
-  if (error) return <p>error</p>
-
 
   return (
     <div>

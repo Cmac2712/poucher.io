@@ -45,7 +45,8 @@ var bookmarks = [
 // schema. This resolver retrieves books from the "books" array above.
 const resolvers = {
   Query: {
-    bookmarks: () => bookmarks,
+
+    bookmarks: async () => bookmarks,
   }
   ,
   Mutation: {
@@ -59,7 +60,6 @@ const resolvers = {
       return bookmark;
     },
     deleteBookmark: (root, { id } ) => {
-      console.log('id: ', id);
       bookmarks = bookmarks.filter(bookmark => bookmark.id !== id);
       return id
     }
@@ -70,7 +70,8 @@ const resolvers = {
 const getHandler = (event, context) => {
   const server = new ApolloServer({
       typeDefs,
-      resolvers
+      resolvers,
+      cache: "bounded"
   });
 
   const graphqlHandler = server.createHandler();
