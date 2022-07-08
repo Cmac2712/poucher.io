@@ -3,8 +3,6 @@ import './app.css'
 import { Bookmarks } from './components/Bookmarks'
 import { AddBookmark } from './components/AddBookmark'
 
-import { gql, useQuery } from '@apollo/client'
-
 function App() {
 
   return (
@@ -12,7 +10,7 @@ function App() {
       <h1 className={`text-2xl text-center font-bold text-zinc-700`}>Hello, my name is Craig and this is my app</h1>  
 
       <Bookmarks />
-      <AddBookmark />
+      {/* <AddBookmark /> */}
     </div>
   )
 }

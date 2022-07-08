@@ -1,5 +1,6 @@
 const { ApolloServer, gql } = require("apollo-server-lambda");
 const { v4: uuidv4, } = require('uuid');
+import main from '../db' 
 
 const typeDefs = gql`
   type Bookmark {
@@ -45,8 +46,10 @@ var bookmarks = [
 // schema. This resolver retrieves books from the "books" array above.
 const resolvers = {
   Query: {
-
-    bookmarks: async () => bookmarks,
+    bookmarks: async () => {
+      main()
+      return bookmarks
+    }
   }
   ,
   Mutation: {
