@@ -2,6 +2,9 @@ import logo from './logo.svg'
 import './app.css'
 import { Bookmarks } from './components/Bookmarks'
 import { AddBookmark } from './components/AddBookmark'
+import { main } from './db/index'
+
+console.log(main());
 
 function App() {
 

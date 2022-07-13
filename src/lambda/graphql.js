@@ -1,6 +1,7 @@
 const { ApolloServer, gql } = require("apollo-server-lambda");
 const { v4: uuidv4, } = require('uuid');
-import main from '../db' 
+//import main from '../db' 
+
 
 const typeDefs = gql`
   type Bookmark {
