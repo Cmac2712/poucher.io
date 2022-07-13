@@ -1,7 +1,9 @@
-const { ApolloServer, gql } = require("apollo-server-lambda");
-const { v4: uuidv4, } = require('uuid');
-//import main from '../db' 
-
+import { ApolloServer, gql } from "apollo-server-express";
+import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
+import http from "http";
+import express from "express";
+import cors from "cors";
+import { v4 as uuidv4 } from 'uuid';
 
 const typeDefs = gql`
   type Bookmark {
@@ -48,7 +50,6 @@ var bookmarks = [
 const resolvers = {
   Query: {
     bookmarks: async () => {
-      main()
       return bookmarks
     }
   }
@@ -57,7 +58,7 @@ const resolvers = {
     addBookmark: (root, { bookmark }) => {
       bookmarks.push(
         {
-          id: uuidv4(),
+          id: uuid(),
           ...bookmark
         }
       );
@@ -70,20 +71,22 @@ const resolvers = {
   } 
 };
 
-// https://stackoverflow.com/a/71629935
-const getHandler = (event, context) => {
+const app = express();
+app.use(cors());
+app.use(express.json());
+const httpServer = http.createServer(app);
+
+const startApolloServer = async(app, httpServer) => {
   const server = new ApolloServer({
-      typeDefs,
-      resolvers,
-      cache: "bounded"
+    typeDefs,
+    resolvers,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
 
-  const graphqlHandler = server.createHandler();
-
-  if (!event.requestContext) {
-      event.requestContext = context;
-  }
-  return graphqlHandler(event, context);
+  await server.start();
+  server.applyMiddleware({ app });
 }
 
-exports.handler = getHandler;
+startApolloServer(app, httpServer);
+
+export default httpServer;

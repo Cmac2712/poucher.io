@@ -11,7 +11,7 @@ import {
 import './index.css'
 
 const client = new ApolloClient({ 
-  uri: "/.netlify/functions/graphql",
+  uri: 'http://localhost:4000/api/graphql',
   cache: new InMemoryCache()
 });
 
