@@ -12,6 +12,7 @@
   "dependencies": {
     "@apollo/client": "^3.6.9",
     "@prisma/client": "^4.0.0",
+    "@saeris/apollo-server-vercel": "^1.0.1",
     "apollo-server-core": "^3.10.0",
     "apollo-server-express": "^3.10.0",
     "apollo-server-lambda": "^3.9.0",
