@@ -1,4 +1,7 @@
-import { ApolloServer, gql } from "@saeris/apollo-server-vercel";
+import { ApolloServer, gql } from "apollo-server-express";
+import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
+import express from 'express';
+import http from 'http';
 import { v4 as uuidv4 } from 'uuid';
 
 const typeDefs = gql`
@@ -67,17 +70,22 @@ const resolvers = {
   } 
 };
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
 
-  // By default, the GraphQL Playground interface and GraphQL introspection
-  // is disabled in "production" (i.e. when `process.env.NODE_ENV` is `production`).
-  //
-  // If you'd like to have GraphQL Playground and introspection enabled in production,
-  // the `playground` and `introspection` options must be set explicitly to `true`.
-  playground: true,
-  introspection: true
-});
+async function startApolloServer(typeDefs, resolvers) {
+  const app = express();
+  const httpServer = http.createServer(app);
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    csrfPrevention: true,
+    cache: 'bounded',
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  });
+  await server.start();
 
-export default server.createHandler();
+  server.applyMiddleware({ app });
+
+  await new Promise(resolve => httpServer.listen({ port: 4000 }, resolve));
+
+  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
+}
