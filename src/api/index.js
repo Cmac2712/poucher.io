@@ -1,8 +1,5 @@
 import { ApolloServer, gql } from "apollo-server-express";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
-import http from "http";
-import express from "express";
-import cors from "cors";
 import { v4 as uuidv4 } from 'uuid';
 
 const typeDefs = gql`
@@ -58,7 +55,7 @@ const resolvers = {
     addBookmark: (root, { bookmark }) => {
       bookmarks.push(
         {
-          id: uuid(),
+          id: uuidv4(),
           ...bookmark
         }
       );
@@ -71,22 +68,17 @@ const resolvers = {
   } 
 };
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-const httpServer = http.createServer(app);
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
 
-const startApolloServer = async(app, httpServer) => {
-  const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-  });
+  // By default, the GraphQL Playground interface and GraphQL introspection
+  // is disabled in "production" (i.e. when `process.env.NODE_ENV` is `production`).
+  //
+  // If you'd like to have GraphQL Playground and introspection enabled in production,
+  // the `playground` and `introspection` options must be set explicitly to `true`.
+  playground: true,
+  introspection: true
+});
 
-  await server.start();
-  server.applyMiddleware({ app });
-}
-
-startApolloServer(app, httpServer);
-
-export default httpServer;
+export default server.createHandler();
