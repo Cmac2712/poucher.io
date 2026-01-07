@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
-/// <reference types="vite/client" />import { defineConfig } from 'vite'
+/// <reference types="vite/client" />
 
+import path from 'path'
 import { defineConfig } from 'vite'
 import { VitePluginFonts } from 'vite-plugin-fonts'
 import react from '@vitejs/plugin-react'
@@ -20,6 +21,11 @@ export default defineConfig({
       }
     })
   ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  },
   // https://github.com/vitest-dev/vitest/blob/main/examples/react-testing-lib/vite.config.ts
   test: {
     globals: true,
